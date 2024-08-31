@@ -37,7 +37,8 @@ window.onload = function init() {
     gl.enableVertexAttribArray(vPosition);
 
     document.getElementById("slider").oninput = function(event) {
-        numCirclePoints = event.target.value;
+        numCirclePoints = Number(event.target.value);
+
         document.getElementById("vertexCount").textContent = numCirclePoints + " vertices";
         render();
     };
@@ -62,9 +63,9 @@ function createCirclePoints(cent, rad, k) {
 function render() {
     createCirclePoints(center, radius, numCirclePoints);
     
-    gl.bindBuffer(gl.ARRAY_BUFFER, vBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, flatten(points), gl.STATIC_DRAW);  // Reallocate buffer data with new points
 
+    
     gl.clear(gl.COLOR_BUFFER_BIT);
     gl.drawArrays(gl.TRIANGLE_FAN, 0, numCirclePoints + 2);
 }
