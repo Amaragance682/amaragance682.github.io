@@ -5,12 +5,15 @@ const bulletSpeed = 0.05;
 const gameSpeed = 10;
 var birds = 0;
 var shots = 0;
+var count = 0;
 var gameArea;
 
 var shotsBegin = 3;
 var shotsEnd = 3;
 var birdsBegin = 3;
 var birdsEnd = 3;
+var countBegin = 3;
+var countEnd = 3;
 
 var points = [
     vec2(-0.1,-1),
@@ -40,13 +43,14 @@ window.onload = function () {
     // Create the player buffer and initialize it
     var bufferId = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, bufferId);
-    gl.bufferData(gl.ARRAY_BUFFER, flatten(points), gl.DYNAMIC_DRAW);
+    gl.bufferData(gl.ARRAY_BUFFER, flatten(points), gl.STATIC_DRAW);
 
     // Set up vertex attributes
     var vPosition = gl.getAttribLocation(program, "vPosition");
     gl.vertexAttribPointer(vPosition, 2, gl.FLOAT, false, 0, 0);
     gl.enableVertexAttribArray(vPosition);
 
+    collisionloop();
     render();
 };
 
@@ -54,9 +58,14 @@ window.onload = function () {
 function render() {
     gl.clear(gl.COLOR_BUFFER_BIT);
 
-    randomBirdSpawn();
-    moveBird();
+    var randomNumber = Math.random() * 100;
+    if (randomNumber < 0.5 && birds < 3) {
+        createBird();
+    }
+
+    moveAllBirds();
     moveshots();
+
 
     // Draw player (triangle)
     gl.drawArrays(gl.TRIANGLE_FAN, 0, 3);
@@ -87,13 +96,29 @@ function movePlayer(x) {
     for (var i = 0; i < 3; i++) {
         points[i] = add(vec2(x, 0.0), points[i]);
     }
+    gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(points));
 }
 
+function createCount() {
+    //var countX = 0.9 - count*0.05;
+    //var countY = 0.9;
+
+    //points.splice(countEnd, 0, vec2(countX, countY + 0.1));
+    //points.splice(countEnd, 0, vec2(countX + 0.01, countY + 0.1));
+    //points.splice(countEnd, 0, vec2(countX + 0.01, countY));
+    //points.splice(countEnd, 0, vec2(countX, countY));
+
+    //count++;
+
+    //countEnd += 4;
+
+    //gl.bufferData(gl.ARRAY_BUFFER, flatten(points), gl.STATIC_DRAW);
+}
 
 
 function createBird() {
     var birdX = mapBounds.right + 0.1;
-    var birdY = Math.random() * (mapBounds.top - mapBounds.bottom) + mapBounds.bottom;
+    var birdY = Math.random()/2 + 0.4;
 
     points.splice(birdsEnd, 0, vec2(birdX - 0.05, birdY + 0.05));
     points.splice(birdsEnd, 0, vec2(birdX + 0.05, birdY + 0.05));
@@ -103,36 +128,33 @@ function createBird() {
     birds++;
 
     birdsEnd += 4;
+    countBegin += 4;
+    countEnd += 4;
+    console.log(birds);
 
-    gl.bufferData(gl.ARRAY_BUFFER, flatten(points), gl.DYNAMIC_DRAW);
-    console.log("bird created at", birdX, birdY);
+    gl.bufferData(gl.ARRAY_BUFFER, flatten(points), gl.STATIC_DRAW);
 }
 
-function randomBirdSpawn() {
-    var randomNumber = Math.random() * 100;
-    if (randomNumber < 2 && birds < 3) {
-        createBird();
-    }
-}
 
-function moveBird() {
-    for (var i = birdsBegin; i < birdsEnd; i += 1) {
-        points[i][0] -= 0.01; // Move bird to the left
-    }
-    removeOutOfBoundsBirds();
-}
-
-function removeOutOfBoundsBirds() {
-    for (var i = birdsBegin; i < birdsEnd; i += 4) {
-        if (points[i][0] < mapBounds.left) { // gerum bara left side out of bounds for now
-            points.splice(i, 4);
-            i -= 4;
-            birds--;
-            birdsEnd -= 4;
+function moveAllBirds() {
+    var outofbounds = false;
+    for ( var i = 0; i<birds && !outofbounds; i++) {
+        var index = birdsBegin + i*4;
+        for (var i = index; i < index+4; i += 1) {
+            points[i][0] -= 0.01; // Move bird to the left
+            if (points[i][0] < mapBounds.left - 0.1) {
+                birds--;
+                birdsEnd -= 4;
+                countBegin -= 4;
+                countEnd -= 4;
+                points.splice(index, 4);
+                gl.bufferData(gl.ARRAY_BUFFER, flatten(points), gl.STATIC_DRAW);
+                outofbounds = true;
+                break;
+            }
         }
     }
-
-    gl.bufferData(gl.ARRAY_BUFFER, flatten(points), gl.DYNAMIC_DRAW);
+    gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(points));
 }
 
 function shoot() {
@@ -150,8 +172,11 @@ function shoot() {
     shotsEnd += 4;
     birdsBegin += 4;
     birdsEnd += 4;
+    countBegin += 4;
+    countEnd += 4;
+    shots++;
 
-    gl.bufferData(gl.ARRAY_BUFFER, flatten(points), gl.DYNAMIC_DRAW);
+    gl.bufferData(gl.ARRAY_BUFFER, flatten(points), gl.STATIC_DRAW);
 }
 
 function moveshots() {
@@ -160,18 +185,56 @@ function moveshots() {
     }
 
     gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(points));
-    console.log(points[4]);
 
     deleteOutOfBoundsShots();
+
 }
 
 function deleteOutOfBoundsShots() {
     for (var i = shotsBegin; i < shotsEnd; i+=4) {
         if (points[i][1] > mapBounds.top + 0.1) {
-            points.splice(i, 4);
             shotsEnd -= 4;
+            birdsBegin -= 4;
+            birdsEnd -= 4;
+            countBegin -= 4;
+            countEnd -= 4;
+            shots--;
+            points.splice(i, 4);
+            break;
         }
     }
+}
+
+function collision(index) {
+    let pos = points[index];
+    for (var i = 0; i < birds; i++) {
+        let birds_pos = points[birdsBegin + i*4];
+        if (pos[0] < birds_pos[0] + 0.1 &&
+            pos[0] + 0.04 > birds_pos[0] &&
+            pos[1] < birds_pos[1] + 0.1 &&
+            pos[1] + 0.04 > birds_pos[1]) {
+            birds--;
+            shots--;
+            points.splice(birdsBegin + 4*i, 4);
+            points.splice(index, 4);
+            shotsEnd -= 4;
+            birdsBegin -= 4;
+            birdsEnd -= 4; 
+            countBegin -= 4;
+            countEnd -= 4;
+            createCount();
+            break;
+            }
+    }
+}
+
+function collisionloop() {
+    setTimeout( function() {
+        for (var i = 0; i < shots; i++) {
+            collision(shotsBegin + 4*i);
+        }
+        collisionloop();
+    }, 30)
 }
 
 
