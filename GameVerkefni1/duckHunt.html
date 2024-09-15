@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<script id="vertex-shader" type="x-shader/x-vertex">
+
+attribute vec4 vPosition;
+        
+void
+main()
+{
+    gl_PointSize = 3.0;
+    gl_Position = vPosition;
+}
+</script>
+        
+<script id="fragment-shader" type="x-shader/x-fragment">
+        
+precision mediump float;
+        
+varying vec4 fColor;
+void
+main()
+{
+    gl_FragColor = vec4( 1.0, 0.0, 0.0, 1.0 );
+}
+</script>
+        
+<script type="text/javascript" src="./Common/webgl-utils.js"></script>
+<script type="text/javascript" src="./Common/initShaders.js"></script>
+<script type="text/javascript" src="./Common/MV.js"></script>
+<head>
+    <meta charset="UTF-8">
+    
+    <link rel="stylesheet" type="text/css" href ="css/styles.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DuckHunt Game!</title>
+</head>
+<body>
+    <script src="JS/script.js"></script>
+    <button id="startGame">
+        Start game!
+    </button>
+
+    <canvas id="gl-canvas" width="400" height="400">
+
+    </canvas>
+
+
+</body>
+</html>
