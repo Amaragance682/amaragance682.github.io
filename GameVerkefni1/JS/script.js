@@ -92,6 +92,29 @@ document.addEventListener('keydown', function (e) {
     gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(points));
 });
 
+document.addEventListener('mousedown', function (e){
+    movement = true;
+    mouseX = e.offsetX;
+
+});
+
+document.addEventListener('mouseup', function (e){
+    movement = false;
+
+
+});
+
+document.addEventListener('mousemove', function (e){
+    if(movement) {
+        var xmove = 2*(e.offsetX - mouseX)/ canvas.width;
+        mouseX = e.offsetX;
+        for (i = 0; i < 3; i++){
+            points[i][0] += xmove;
+        }
+    }
+
+});
+
 function movePlayer(x) { 
     for (var i = 0; i < 3; i++) {
         points[i] = add(vec2(x, 0.0), points[i]);
