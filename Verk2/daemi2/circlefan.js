@@ -56,7 +56,7 @@ function createCirclePoints(cent, rad, k) {
         var p = vec2(rad * Math.sin(a) + cent[0], rad * Math.cos(a) + cent[1]);
         points.push(p);
     }
-
+    
     points.push(points[1])
 }
 
