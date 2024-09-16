@@ -1,22 +1,8 @@
 body {
-    background-image: url("/GameVerkefni1/Assets/background.jpg");
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
+    
     min-height: 600px;
 }
 
-.player { /* player character */
-    position: absolute;
-    width: 70px;
-    height: 50px;
-    background-image: url("/GameVerkefni1/Assets/Lunarian_Bow2fukkit.png");
-    background-repeat: no-repeat;
-    background-size: auto;
-    top: 20%;
-    left: 50%;
-    transform: translate(-50%, -50%); /* Center the player initially */
-}
 
 #game-area {
     position: relative;
