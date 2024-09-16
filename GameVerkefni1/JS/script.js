@@ -7,6 +7,8 @@ var birds = 0;
 var shots = 0;
 var count = 0;
 var gameArea;
+var stig = " ";
+var stigCounter = 0;
 
 var shotsBegin = 3;
 var shotsEnd = 3;
@@ -246,6 +248,15 @@ function collision(index) {
             countBegin -= 4;
             countEnd -= 4;
             createCount();
+            console.log("bird got hit!");
+            stig += " | "; // baetir vid stigum
+            stigCounter++;
+            document.getElementById("stig").innerText = `Stig: ${stig}`;
+
+            if (stigCounter > 4){
+                document.getElementById("gameText").innerText = "þú vannst!!!";
+            }
+
             break;
             }
     }
