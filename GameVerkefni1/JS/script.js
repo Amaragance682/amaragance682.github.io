@@ -61,7 +61,7 @@ function render() {
     gl.clear(gl.COLOR_BUFFER_BIT);
 
     var randomNumber = Math.random() * 100;
-    if (randomNumber < 0.5 && birds < 3) {
+    if (randomNumber < 0.5 && birds < 9) {
         createBird();
     }
 
