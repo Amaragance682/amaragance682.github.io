@@ -137,21 +137,57 @@ function render()
 
     // Build the letter H...
     // First the right leg
-    mv1 = mult( mv, translate( -0.3, 0.0, 0.0 ) );
-    mv1 = mult( mv1, scalem( 0.1, 1.0, 0.1 ) );
+    mv1 = mult( mv, translate( -0.4, 0.0, 0.0 ) );
+    mv1 = mult( mv1, scalem( 0.05, 1.4, 0.5 ) );
     gl.uniformMatrix4fv(matrixLoc, false, flatten(mv1));
     gl.drawArrays( gl.TRIANGLES, 0, numVertices );
 
     // Then the left leg
-    mv1 = mult( mv, translate( 0.3, 0.0, 0.0 ) );
-    mv1 = mult( mv1, scalem( 0.1, 1.0, 0.1 ) );
+    mv1 = mult( mv, translate( 0.4, 0.0, 0.0 ) );
+    mv1 = mult( mv1, scalem( 0.05, 1.4, 0.5 ) );
     gl.uniformMatrix4fv(matrixLoc, false, flatten(mv1));
     gl.drawArrays( gl.TRIANGLES, 0, numVertices );
 
-    // Finally the middle bar (no translation necessary)
-    mv1 = mult( mv, scalem( 0.5, 0.1, 0.1 ) );
+
+    // efsta
+    mv1 = mult( mv, translate( 0, 0.65, 0.0 ) );
+    mv1 = mult( mv1, scalem( 0.8, 0.05, 0.5 ) );
     gl.uniformMatrix4fv(matrixLoc, false, flatten(mv1));
     gl.drawArrays( gl.TRIANGLES, 0, numVertices );
+
+
+    // 2 efsta
+    mv1 = mult( mv, translate( 0, 0.2, 0.0 ) );
+    mv1 = mult( mv1, scalem( 0.8, 0.05, 0.5 ) );
+    gl.uniformMatrix4fv(matrixLoc, false, flatten(mv1));
+    gl.drawArrays( gl.TRIANGLES, 0, numVertices );
+
+
+    // 3 efsta
+    mv1 = mult( mv, translate( 0, -0.2, 0.0 ) );
+    mv1 = mult( mv1, scalem( 0.8, 0.05, 0.5 ) );
+    gl.uniformMatrix4fv(matrixLoc, false, flatten(mv1));
+    gl.drawArrays( gl.TRIANGLES, 0, numVertices );
+
+
+    // nedsta
+    mv1 = mult( mv, translate( 0, -0.55, 0.0 ) );
+    mv1 = mult( mv1, scalem( 0.8, 0.05, 0.5 ) );
+    gl.uniformMatrix4fv(matrixLoc, false, flatten(mv1));
+    gl.drawArrays( gl.TRIANGLES, 0, numVertices );
+
+    //backboard
+    mv1 = mult( mv, translate( 0, 0.0, 0.225 ) );
+    mv1 = mult( mv1, scalem( 0.8, 1.4, 0.05 ) );
+    gl.uniformMatrix4fv(matrixLoc, false, flatten(mv1));
+    gl.drawArrays( gl.TRIANGLES, 0, numVertices );
+    
+    //little frontboard
+    mv1 = mult( mv, translate( 0, -0.6, -0.22 ) );
+    mv1 = mult( mv1, scalem( 0.8, 0.15, 0.02 ) );
+    gl.uniformMatrix4fv(matrixLoc, false, flatten(mv1));
+    gl.drawArrays( gl.TRIANGLES, 0, numVertices );
+    
 
     requestAnimFrame( render );
 }
