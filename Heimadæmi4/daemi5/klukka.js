@@ -13,9 +13,10 @@ var spinY = 0;
 var origX;
 var origY;
 
-var rotYear = 0.0;
-var rotDay = 0.0;
-var earthTilt = 23.5;
+var rotateHour = 0.0;
+var rotateMin = 0.0;
+var rotateSec = 0.0;
+
 
 var matrixLoc;
 
@@ -106,11 +107,11 @@ function quad(a, b, c, d)
     var vertexColors = [
         [ 0.0, 0.0, 0.0, 1.0 ],  // black
         [ 1.0, 0.0, 0.0, 1.0 ],  // red
-        [ 1.0, 1.0, 0.0, 1.0 ],  // yellow
         [ 0.0, 1.0, 0.0, 1.0 ],  // green
+        [ 1.0, 1.0, 0.0, 1.0 ],  // yellow
         [ 0.0, 0.0, 1.0, 1.0 ],  // blue
-        [ 1.0, 0.0, 1.0, 1.0 ],  // magenta
         [ 0.0, 1.0, 1.0, 1.0 ],  // cyan
+        [ 1.0, 0.0, 1.0, 1.0 ],  // magenta
         [ 1.0, 1.0, 1.0, 1.0 ]   // white
     ];
 
@@ -131,40 +132,55 @@ function quad(a, b, c, d)
 
 
 function render() {
+    
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-    // Base transformation matrix
+
     var mv = mat4();
     mv = mult(mv, rotateX(spinX));
     mv = mult(mv, rotateY(spinY));
 
 
 
-    // Increment time values
-    rotDay += 1.0; // Simulate seconds (adjust speed for smoothness if needed)
-    rotYear = rotDay / 60.0; // Minutes
-    var hourRotation = rotYear / 12.0; // Hours (divided by 12 for the 12-hour format)
+    // time values
+    rotateHour -= 0.09; 
+    rotateMin -= 0.5;
+    rotateSec -= 60.0;
+        // hour tick
+        mv1 = mult( mv, rotateZ( rotateHour ) );
+        mv1 = mult( mv1, translate( 0.25, 0.0, 0.0 ) );
+        mv1 = mult( mv1, scalem( 0.5, 0.05, 0.05 ) );
+        gl.uniformMatrix4fv(matrixLoc, false, flatten(mv1));
+        gl.drawArrays( gl.TRIANGLES, 0, numVertices );
+        gl.uniformMatrix4fv(matrixLoc, false, flatten(mv1));
+        gl.drawArrays( gl.TRIANGLES, 0, numVertices );
+        
 
-    // Draw the hour hand
-    var hourHand = mult(mv, rotateZ(hourRotation)); // Rotate the hour hand
-    hourHand = mult(hourHand, translate(0.1, 0.0, 0.0)); // Move to the right end (half-length of the hand)
-    hourHand = mult(hourHand, scalem(0.5, 0.1, 0.05)); // Scale to form the hour hand shape
-    gl.uniformMatrix4fv(matrixLoc, false, flatten(hourHand));
-    gl.drawArrays(gl.TRIANGLES, 0, numVertices);
+        // min tick
+        mv1 = mult( mv, rotateZ( rotateHour ) );
+        mv1 = mult( mv1, translate( 0.48, 0.0, 0.0 ) );
+        mv1 = mult( mv1, scalem( 0.5, 0.8, 0.3 ) );
 
-    // Draw the minute hand (attach at the end of the hour hand)
-    var minuteHand = mult(hourHand, rotateZ(hourRotation)); // Rotate minute hand twice the speed
-    minuteHand = mult(minuteHand, translate(0.5, 0.0, 0.0)); // Attach at the end of the hour hand
-    minuteHand = mult(minuteHand, scalem(0.7, 0.4, 0.05)); // Scale the minute hand
-    gl.uniformMatrix4fv(matrixLoc, false, flatten(minuteHand));
-    gl.drawArrays(gl.TRIANGLES, 0, numVertices);
+        
+        // sec tick
+        mv1 = mult( mv1, rotateZ( rotateMin ) );
+        mv1 = mult( mv1, translate( 0.25, 0.0, 0.0 ) );
+        mv1 = mult( mv1, scalem( 0.5, 0.04, 0.04 ) );
 
-    // Add the second hand (attach at the end of the minute hand)
-    var secondHand = mult(minuteHand, rotateZ(rotDay * 3)); // Rotate three times the speed
-    secondHand = mult(secondHand, translate(0.5, 0.0, 0.0)); // Attach at the end of the minute hand
-    secondHand = mult(secondHand, scalem(0.5, 0.03, 0.03)); // Scale the second hand
-    gl.uniformMatrix4fv(matrixLoc, false, flatten(secondHand));
-    gl.drawArrays(gl.TRIANGLES, 0, numVertices);
+        gl.uniformMatrix4fv(matrixLoc, false, flatten(mv1));
+        gl.drawArrays( gl.TRIANGLES, 0, numVertices );
 
+        
+
+
+        // cool bakgrunnur sem er haegt ad splitta
+        mv1 = mult(mv, scalem(2.0, 2.0, 0.005));
+        mv1 = mult(mv1, translate(0.0, 0.0, 5.0))
+        mv1 = mult(mv1, rotate(90, [0,1,0])) // gooffy
+        gl.uniformMatrix4fv(matrixLoc, false, flatten(mv1));
+        gl.drawArrays( gl.TRIANGLES, 0, numVertices );
+
+
+        
     requestAnimFrame(render);
 }
