@@ -145,7 +145,7 @@ function render() {
     // time values
     rotateHour -= 0.09; 
     rotateMin -= 0.5;
-    rotateSec -= 60.0;
+    rotateSec -= 2.0;
         // hour tick
         mv1 = mult( mv, rotateZ( rotateHour ) );
         mv1 = mult( mv1, translate( 0.25, 0.0, 0.0 ) );
@@ -159,16 +159,22 @@ function render() {
         // min tick
         mv1 = mult( mv, rotateZ( rotateHour ) );
         mv1 = mult( mv1, translate( 0.48, 0.0, 0.0 ) );
-        mv1 = mult( mv1, scalem( 0.5, 0.8, 0.3 ) );
-
-        
-        // sec tick
         mv1 = mult( mv1, rotateZ( rotateMin ) );
-        mv1 = mult( mv1, translate( 0.25, 0.0, 0.0 ) );
-        mv1 = mult( mv1, scalem( 0.5, 0.04, 0.04 ) );
-
+        mv1 = mult( mv1, translate( 0.18, 0.0, 0.0 ) );
+        mv1 = mult( mv1, scalem( 0.35, 0.03, 0.05 ) );
         gl.uniformMatrix4fv(matrixLoc, false, flatten(mv1));
-        gl.drawArrays( gl.TRIANGLES, 0, numVertices );
+        gl.drawArrays( gl.TRIANGLES, 0, numVertices )
+
+        // sec tic
+        mv1 = mult( mv, rotateZ( rotateHour ) );
+        mv1 = mult( mv1, translate( 0.48, 0.0, 0.0 ) );
+        mv1 = mult( mv1, rotateZ( rotateMin ) );
+        mv1 = mult( mv1, translate( 0.34, 0.0, 0.0 ) );
+        mv1 = mult( mv1, rotateZ( rotateSec ) );
+        mv1 = mult( mv1, translate( 0.15, 0.0, 0.0 ) );
+        mv1 = mult( mv1, scalem( 0.3, 0.02, 0.03 ) );
+        gl.uniformMatrix4fv(matrixLoc, false, flatten(mv1));
+        gl.drawArrays( gl.TRIANGLES, 0, numVertices )
 
         
 
