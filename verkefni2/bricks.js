@@ -1,9 +1,4 @@
-/////////////////////////////////////////////////////////////////
-//    Sýnidæmi í Tölvugrafík
-//     Búum til bókstafinn H úr þremur teningum
-//
-//    Hjálmtýr Hafsteinsson, september 2024
-/////////////////////////////////////////////////////////////////
+
 var canvas;
 var gl;
 
@@ -16,14 +11,17 @@ var colors = [];
 
 var newSets = [];
 
-var movement = false;     // Do we rotate?
+var movement = false;    
 var spinX = 0;
 var spinY = 0;
 var origX;
 var origY;
+var zoom = 0.7;
+
 
 var sizeIncrease = 0.00;
 var sizeShrinking = 0.05;
+
 
 
 
@@ -68,6 +66,17 @@ window.onload = function init()
 
     matrixLoc = gl.getUniformLocation( program, "transform" );
 
+
+    canvas.addEventListener("wheel", function(e) {
+        console.log("went into scroll");
+        if (e.deltaY > 0) {
+            zoom *= 0.9;  
+        } else {
+            zoom *= 1.1;  
+        }
+        e.preventDefault();  
+    });
+
     //event listeners for mouse
     canvas.addEventListener("mousedown", function(e){
         movement = true;
@@ -88,6 +97,8 @@ window.onload = function init()
             origY = e.offsetY;
         }
     } );
+
+    
     
     render();
     gameloop();
@@ -126,18 +137,7 @@ function colorCube()
 
 function quad(a, b, c, d) 
 {
-    /*
-    var vertices = [
-        vec3( -0.5, -0.5,  0.5 ),
-        vec3( -0.5,  0.5,  0.5 ),
-        vec3(  0.5,  0.5,  0.5 ),
-        vec3(  0.5, -0.5,  0.5 ),
-        vec3( -0.5, -0.5, -0.5 ),
-        vec3( -0.5,  0.5, -0.5 ),
-        vec3(  0.5,  0.5, -0.5 ),
-        vec3(  0.5, -0.5, -0.5 )
-    ];
-    */
+
     var vertices = [
         vec3( -0.45, -0.45,  0.45 ),
         vec3( -0.45,  0.45,  0.45 ),
@@ -250,15 +250,19 @@ function gameloop(){
 }
 
 
+
 function render()
 {
     gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
+    
+
     if(sizeIncrease <= 0.99){
         sizeIncrease = sizeIncrease + 0.02;
     }
-
+    
     var mv = mat4();
+    mv = mult(mv, scalem(zoom, zoom, zoom));
     mv = mult( mv, rotateX(spinX) );
     mv = mult( mv, rotateY(spinY) ) ;
     mv = mult( mv, scalem( 0.05, 0.05, 0.05 ) );  
@@ -294,7 +298,7 @@ function render()
             }
         }
     }
-
+    
     requestAnimFrame( render );
 }
 
