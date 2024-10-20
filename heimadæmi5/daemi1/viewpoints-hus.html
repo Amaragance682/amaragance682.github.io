@@ -1,8 +1,7 @@
 <html>
 
 <script id="vertex-shader" type="x-shader/x-vertex">
-
-attribute  vec4 vPosition;
+attribute vec4 vPosition;
 
 uniform mat4 projection;
 uniform mat4 modelview;
@@ -14,9 +13,8 @@ void main()
 </script>
 
 <script id="fragment-shader" type="x-shader/x-fragment">
-
 precision mediump float;
-   
+
 uniform vec4 fColor;
 
 void main()
@@ -31,13 +29,11 @@ void main()
 <script type="text/javascript" src="viewpoints-hus.js"></script>
 
 <body>
-<h4>Sláið á 1, 2, ..., 9 til að skipta um sjónarhorn.  Núverandi sjónarhorn er fyrir neðan myndina</h4>
-<h4>Örvalyklar hækka og lækka staðsetningu áhorfanda (fer eftir sjónarhorni)</h4>
-<canvas id="gl-canvas" width="700" height="700">
-<div id="Viewpoint"></div>
-<div id="Height"></div>
-   
-<br/>
-
+    <h4>Sláið á 1, 2, ..., 9 til að skipta um sjónarhorn. Núverandi sjónarhorn er fyrir neðan myndina</h4>
+    <h4>Örvalyklar hækka og lækka staðsetningu áhorfanda (fer eftir sjónarhorni)</h4>
+    <canvas id="gl-canvas" width="700" height="700"></canvas>
+    <div id="Viewpoint"></div>
+    <div id="Height"></div>
 </body>
+
 </html>
