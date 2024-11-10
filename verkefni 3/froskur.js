@@ -18,13 +18,15 @@ var BLUE = vec4(0.0, 0.0, 1.0, 1.0);
 var RED = vec4(1.0, 0.0, 0.0, 1.0);
 var YELLOW = vec4(1.0, 1.0, 0.1, 1.0);
 var GRAY = vec4(0.4, 0.4, 0.4, 1.0);
+var GREEN = vec4(0.0, 1.0, 0.0, 1.0);
+var BROWN = vec4(0.65, 0.33, 0.12, 1.0);
 
 var numCubeVertices  = 36;
 
 
 
 var laneSpeed = [0.1,0.2,0.2,0.3]
-var streamSpeed = [0.15,0.1,0.2,0.15,0.05]
+var streamSpeed = [0.05,0.05,0.1,0.1,0.05]
 
 var carPos = [];
 var logPos = [];
@@ -119,7 +121,7 @@ window.onload = function init()
 		movement = true;
 		origX = e.offsetX;
 		origY = e.offsetY;
-		e.preventDefaul();
+		e.preventDefault();
 	});
 	window.addEventListener("mouseup", function() {
 		movement = false;
@@ -224,7 +226,8 @@ function initLilies() {
 			}
 		}
 		lilyPos.push(pos);
-		if (lilyPos[i][3]) sinkTimer(i, (Math.random()/2 + 0.5)*20000);
+		if (lilyPos[i][3]) sinkTimer(i, (Math.random()/2 + 0.5)*10000);
+
 	}
 }
 
@@ -350,7 +353,7 @@ function drawLily(x, y, length, height, direction, mv) {
 		mv1 = mult( mv1, rotateZ(180) );
 	}
 
-	gl.uniform4fv( colorLoc, RED );
+	gl.uniform4fv( colorLoc, GREEN );
 
 	gl.bindBuffer( gl.ARRAY_BUFFER, cubeBuffer );
 	gl.vertexAttribPointer( vPosition, 3, gl.FLOAT, false, 0, 0 );
@@ -389,7 +392,7 @@ function drawLog( x, y, length, direction, mv ) {
 		mv1 = mult( mv1, rotateZ(180) );
 	}
 
-	gl.uniform4fv( colorLoc, GRAY );
+	gl.uniform4fv( colorLoc, BROWN );
 
 	gl.bindBuffer( gl.ARRAY_BUFFER, cubeBuffer );
 	gl.vertexAttribPointer( vPosition, 3, gl.FLOAT, false, 0, 0 );
@@ -401,8 +404,8 @@ function drawLog( x, y, length, direction, mv ) {
 }
 
 function drawPlayer( mv ) {
-	mv = mult( mv, translate( playerPos[0], playerPos[1], 0.0 ) );
-	mv = mult( mv, scalem( 2.75, 2.75, 2.75 ) );
+	mv = mult( mv, translate( playerPos[0], playerPos[1], 0.5 ) );
+	mv = mult( mv, scalem( 2.75, 2.75, 4.0 ) );
 
 	gl.uniform4fv( colorLoc, BLUE );
 
@@ -498,7 +501,11 @@ function render()
 			break;
 		case 2:
 			// first person view
-			mv = perspective( 90.0, 1.0, 10.0, 100.0 );
+			mv = perspective( 90.0, 1.0, 10.0, 500.0 );
+
+
+
+
 			mv = mult( mv, rotateX(spinY) );
 			mv = mult( mv, rotateZ(spinZ) );
 
